@@ -13,6 +13,8 @@ import {Formik} from 'formik';
 import * as yup from 'yup';
 import {Notifier, Easing, NotifierComponents} from 'react-native-notifier';
 import {colors} from '../config';
+import HttpClient from '../network/HttpClient';
+import NetworkConfig from '../network/NetworkConfig';
 
 const API = require('../API');
 
@@ -39,37 +41,75 @@ export default function Signin(props) {
     setIsSecureTextEntry(!isSecureTextEntry);
   }
 
-  function handleSubmit(values) {
+  async function handleSubmit(values) {
     setIsLoading(true);
-    API.post('authenticate', {
-      email: values.email,
-      password: values.password,
-    })
-      .then((json) => {
-        console.log(json);
-        setIsLoading(false);
-        //show toast
-        Notifier.showNotification({
-          title:
-            json.status === 'successful' ? 'Success' : 'Something went wrong',
-          description: json.status === 'successful' ? json.message : '',
-          Component: NotifierComponents.Alert,
-          componentProps: {
-            alertType: json.status === 'successful' ? 'success' : 'error',
-          },
-          duration: 3000,
-          showAnimationDuration: 800,
-          showEasing: Easing.bounce,
-          onHidden: () => console.log('Hidden'),
-          onPress: () => console.log('Press'),
-          hideOnPress: true,
-        });
-      })
-      .catch((err) => {
-        setIsLoading(false);
-        console.error(err);
+    // API.post('authenticate', {
+    //   email: values.email,
+    //   password: values.password,
+    // })
+    //   .then((json) => {
+    //     console.log(json);
+    //     setIsLoading(false);
+    //     //show toast
+    //     Notifier.showNotification({
+    //       title:
+    //         json.status === 'successful' ? 'Success' : 'Something went wrong',
+    //       description: json.status === 'successful' ? json.message : '',
+    //       Component: NotifierComponents.Alert,
+    //       componentProps: {
+    //         alertType: json.status === 'successful' ? 'success' : 'error',
+    //       },
+    //       duration: 3000,
+    //       showAnimationDuration: 800,
+    //       showEasing: Easing.bounce,
+    //       onHidden: () => console.log('Hidden'),
+    //       onPress: () => console.log('Press'),
+    //       hideOnPress: true,
+    //     });
+    //   })
+    //   .catch((err) => {
+    //     setIsLoading(false);
+    //     console.error(err);
+    //   });
+    try {
+      let payload = {
+        email: values.email,
+        password: values.password,
+      };
+      const json = await loginResponse(payload);
+      console.log(json);
+      setIsLoading(false);
+      //show toast
+      Notifier.showNotification({
+        title:
+          json.status === 'successful' ? 'Success' : 'Something went wrong',
+        description: json.status === 'successful' ? json.message : '',
+        Component: NotifierComponents.Alert,
+        componentProps: {
+          alertType: json.status === 'successful' ? 'success' : 'error',
+        },
+        duration: 3000,
+        showAnimationDuration: 800,
+        showEasing: Easing.bounce,
+        onHidden: () => console.log('Hidden'),
+        onPress: () => console.log('Press'),
+        hideOnPress: true,
       });
+    } catch (e) {
+      console.log(e);
+      setIsLoading(false);
+    }
   }
+
+  const loginResponse = async (payload) => {
+    const response = await HttpClient.Request.post(
+      NetworkConfig.BASE_URL + 'api/auth/login',
+    )
+      .jsonBody(payload)
+      .call();
+    const json = response.json();
+    return response;
+  };
 
   return (
     // <Container>
