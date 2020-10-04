@@ -1,0 +1,9 @@
+export { default as Home } from './Home';
+export { default as Chats } from './Chats';
+export { default as Chat } from './Chat';
+export { default as Post } from './Post';
+export { default as Profile } from './Profile';
+export { default as Search } from './Search';
+export { default as Signin } from './Signin';
+export { default as Signup } from './Signup';
+export { default as ForgotPassword } from './ForgotPassword';
