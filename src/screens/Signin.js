@@ -16,6 +16,7 @@ import {colors} from '../config';
 import HttpClient from '../network/HttpClient';
 import NetworkConfig from '../network/NetworkConfig';
 import ApiService from '../network/ApiService';
+import AuthService from "../network/authservice/AuthService";
 
 const API = require('../API');
 
@@ -79,7 +80,7 @@ export default function Signin(props) {
         email: values.email,
         password: values.password,
       };
-      const json = await ApiService.Login(payload);
+      const json = await AuthService.login(payload);
       console.log(json);
       setIsLoading(false);
       //show toast

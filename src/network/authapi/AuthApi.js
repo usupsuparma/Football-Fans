@@ -4,8 +4,9 @@ import NetworkConfig from '../NetworkConfig';
 
 const URL_LOGIN = NetworkConfig.BASE_URL + 'api/auth/login';
 const URL_USER = NetworkConfig.BASE_URL + '/api/auth/user/';
+const URL_REGISTER = NetworkConfig.BASE_URL + 'register';
 
-async function Login(payload): Promise<ApiResponse> {
+async function login(payload): Promise<ApiResponse> {
   const response = await HttpClient.Request.post(URL_LOGIN)
     .jsonBody(payload)
     .call();
@@ -56,10 +57,20 @@ async function getDetailUser(id): Promise<ApiResponse> {
   };
 }
 
+async function register(payload): Promise<ApiResponse> {
+  const response = await HttpClient.Request.post(payload).call();
+  const body = await response.json();
+  return {
+    rawResponse: response,
+    body: body,
+  };
+}
+
 export default {
-  Login,
+  login,
   addUser,
   updateUser,
   getUsers,
   getDetailUser,
+  register,
 };
