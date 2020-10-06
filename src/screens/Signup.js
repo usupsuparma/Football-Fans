@@ -13,54 +13,66 @@ import * as yup from 'yup';
 import {Input, Icon, Button} from 'react-native-elements';
 import {Notifier, Easing, NotifierComponents} from 'react-native-notifier';
 import {colors} from '../config';
+import HttpClient from '../network/HttpClient';
+import NetworkConfig from '../network/NetworkConfig';
 
 const API = require('../API');
 
 export default function Signup(props) {
   const [isLoading, setIsLoading] = useState(false);
 
-  function handleSubmit(values) {
+  async function handleSubmit(values) {
     setIsLoading(true);
-    API.post('register', {
-      email: values.email,
-      password: values.password,
-      first_name: values.firstName,
-      last_name: values.lastName,
-      phone_number: values.number,
-      country: 'NG',
-      group_id: 1,
-      club_id: 1,
-    })
-      .then((json) => {
-        console.log(json);
-        setIsLoading(false);
-        //show toast
-        Notifier.showNotification({
-          title:
-            json.status === 'successful' ? 'Success' : 'Something went wrong',
-          description:
-            json.status === 'successful'
-              ? json.message
-              : 'Email already exists',
-          Component: NotifierComponents.Alert,
-          componentProps: {
-            alertType: json.status === 'successful' ? 'success' : 'error',
-          },
-          duration: 3000,
-          showAnimationDuration: 800,
-          showEasing: Easing.bounce,
-          onHidden: () => console.log('Hidden'),
-          onPress: () => console.log('Press'),
-          hideOnPress: true,
-        });
-
-        props.navigation.navigate('Signin');
-      })
-      .catch((err) => {
-        setIsLoading(false);
-        console.error(err);
-      });
+    // todo this old code
+    // API.post('register', {
+    //   email: values.email,
+    //   password: values.password,
+    //   first_name: values.firstName,
+    //   last_name: values.lastName,
+    //   phone_number: values.number,
+    //   country: 'NG',
+    //   group_id: 1,
+    //   club_id: 1,
+    // })
+    //   .then((json) => {
+    //     console.log(json);
+    //     setIsLoading(false);
+    //     //show toast
+    //     Notifier.showNotification({
+    //       title:
+    //         json.status === 'successful' ? 'Success' : 'Something went wrong',
+    //       description:
+    //         json.status === 'successful'
+    //           ? json.message
+    //           : 'Email already exists',
+    //       Component: NotifierComponents.Alert,
+    //       componentProps: {
+    //         alertType: json.status === 'successful' ? 'success' : 'error',
+    //       },
+    //       duration: 3000,
+    //       showAnimationDuration: 800,
+    //       showEasing: Easing.bounce,
+    //       onHidden: () => console.log('Hidden'),
+    //       onPress: () => console.log('Press'),
+    //       hideOnPress: true,
+    //     });
+    //
+    //     props.navigation.navigate('Signin');
+    //   })
+    //   .catch((err) => {
+    //     setIsLoading(false);
+    //     console.error(err);
+    //   });
   }
+
+  const registerResponse = async () => {
+    const response = await HttpClient.Request.post(
+      NetworkConfig.BASE_URL + 'api/auth/login',
+    )
+      .jsonBody(payload)
+      .call();
+    return response.json();
+  };
 
   return (
     // <Container>

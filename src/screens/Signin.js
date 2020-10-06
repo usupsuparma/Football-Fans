@@ -15,6 +15,7 @@ import {Notifier, Easing, NotifierComponents} from 'react-native-notifier';
 import {colors} from '../config';
 import HttpClient from '../network/HttpClient';
 import NetworkConfig from '../network/NetworkConfig';
+import ApiService from '../network/ApiService';
 
 const API = require('../API');
 
@@ -43,6 +44,8 @@ export default function Signin(props) {
 
   async function handleSubmit(values) {
     setIsLoading(true);
+    // todo this is old code
+
     // API.post('authenticate', {
     //   email: values.email,
     //   password: values.password,
@@ -76,7 +79,7 @@ export default function Signin(props) {
         email: values.email,
         password: values.password,
       };
-      const json = await loginResponse(payload);
+      const json = await ApiService.Login(payload);
       console.log(json);
       setIsLoading(false);
       //show toast
@@ -100,16 +103,6 @@ export default function Signin(props) {
       setIsLoading(false);
     }
   }
-
-  const loginResponse = async (payload) => {
-    const response = await HttpClient.Request.post(
-      NetworkConfig.BASE_URL + 'api/auth/login',
-    )
-      .jsonBody(payload)
-      .call();
-    const json = response.json();
-    return response;
-  };
 
   return (
     // <Container>
